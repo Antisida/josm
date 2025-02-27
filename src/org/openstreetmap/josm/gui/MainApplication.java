@@ -856,7 +856,7 @@ public class MainApplication {
 
         args.getPreferencesToSet().forEach(prefs::put);
 
-        if (!language.isPresent()) {
+        if (language.isEmpty()) {
             I18n.set(Config.getPref().get("language", null));
         }
         updateSystemProperties();
