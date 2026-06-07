@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.gui;
 
+import static org.openstreetmap.josm.gui.NavigatableComponent.PROP_ZOOM_RATIO;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Cursor;
@@ -247,6 +248,12 @@ public class MapMover extends MouseAdapter implements Destroyable {
         MainApplication.getLayerManager().getLayers().forEach(Layer::invalidate);
     }
 
+//    @Override
+//    public void mouseWheelMoved(MouseWheelEvent e) {
+//        int rotation = Boolean.TRUE.equals(PROP_ZOOM_REVERSE_WHEEL.get()) ? -e.getWheelRotation() : e.getWheelRotation();
+//        iSlippyMapChooser.zoomIn();
+//        zoomManyTimes(e.getX(), e.getY(), rotation);
+//    }
     /**
      * Zoom the map by 1/5th of current zoom per wheel-delta.
      * @param e The wheel event.
@@ -255,6 +262,7 @@ public class MapMover extends MouseAdapter implements Destroyable {
     public void mouseWheelMoved(MouseWheelEvent e) {
         int rotation = Boolean.TRUE.equals(PROP_ZOOM_REVERSE_WHEEL.get()) ? -e.getWheelRotation() : e.getWheelRotation();
         nc.zoomManyTimes(e.getX(), e.getY(), rotation);
+//        nc.scaleZoomManyTimes(1);
     }
 
     /**

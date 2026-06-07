@@ -8,6 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +23,14 @@ import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.io.ProgressOutputStream;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 /**
  * Provides a uniform access for a HTTP/HTTPS 1.0/1.1 server.
+ *
  * @since 15229
  */
 public final class Http1Client extends HttpClient {
@@ -29,16 +39,53 @@ public final class Http1Client extends HttpClient {
 
     /**
      * Constructs a new {@code Http1Client}.
-     * @param url URL to access
+     *
+     * @param url           URL to access
      * @param requestMethod HTTP request method (GET, POST, PUT, DELETE...)
      */
     public Http1Client(URL url, String requestMethod) {
         super(url, requestMethod);
     }
 
+    private void setupSslBypass(HttpURLConnection connection) throws NoSuchAlgorithmException, KeyManagementException {
+        if (connection instanceof HttpsURLConnection) {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+            SSLContext sslContext = null;
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+
+            HttpsURLConnection httpURLConnection = (HttpsURLConnection) connection;
+            httpURLConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+            httpURLConnection.setHostnameVerifier((hostname, session) -> true);
+        }
+    }
+
     @Override
     protected void setupConnection(ProgressMonitor progressMonitor) throws IOException {
         connection = (HttpURLConnection) getURL().openConnection();
+
+        if (getURL().getHost().contains("gov.ru")) {
+            try {
+                setupSslBypass(connection);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (KeyManagementException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         connection.setRequestMethod(getRequestMethod());
         connection.setRequestProperty("User-Agent", Version.getInstance().getFullAgentString());
         connection.setConnectTimeout(getConnectTimeout());
@@ -189,7 +236,7 @@ public final class Http1Client extends HttpClient {
         public Map<String, List<String>> getHeaderFields() {
             // returned map from HttpUrlConnection is case sensitive, use case insensitive TreeMap to conform to RFC 2616
             Map<String, List<String>> ret = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-            for (Entry<String, List<String>> e: connection.getHeaderFields().entrySet()) {
+            for (Entry<String, List<String>> e : connection.getHeaderFields().entrySet()) {
                 if (e.getKey() != null) {
                     ret.put(e.getKey(), e.getValue());
                 }

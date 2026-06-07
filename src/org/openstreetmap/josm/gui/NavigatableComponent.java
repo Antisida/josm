@@ -383,12 +383,20 @@ public class NavigatableComponent extends JComponent implements Helpful {
         zoomTo(state.getCenter().getEastNorth(), scaleZoomIn());
     }
 
+//    public void zoomIn(EastNorth eastNorth) {
+//        zoomTo(eastNorth, scaleZoomIn());
+//    }
+
     /**
      * Zoom out current view. Use configured zoom step and scaling settings.
      */
     public void zoomOut() {
         zoomTo(state.getCenter().getEastNorth(), scaleZoomOut());
     }
+
+//    public void zoomOut(EastNorth eastNorth) {
+//        zoomTo(eastNorth, scaleZoomOut());
+//    }
 
     protected void updateLocationState() {
         if (isVisibleOnScreen()) {

@@ -1,12 +1,17 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.gui.bbox;
 
+import static org.openstreetmap.josm.gui.MapMover.PROP_ZOOM_REVERSE_WHEEL;
+import static org.openstreetmap.josm.gui.NavigatableComponent.PROP_ZOOM_INTERMEDIATE_STEPS;
+import static org.openstreetmap.josm.gui.NavigatableComponent.PROP_ZOOM_RATIO;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import org.openstreetmap.josm.gui.layer.NativeScaleLayer.Scale;
+import org.openstreetmap.josm.gui.layer.NativeScaleLayer.ScaleList;
 import org.openstreetmap.josm.tools.PlatformManager;
 
 /**
@@ -178,6 +185,37 @@ public class SlippyMapController extends MouseAdapter {
             moveTask.setDirectionX(direction);
         }
     }
+//
+//    @Override
+//    public void mouseWheelMoved(MouseWheelEvent e) {
+//        int rotation = Boolean.TRUE.equals(PROP_ZOOM_REVERSE_WHEEL.get()) ? -e.getWheelRotation() : e.getWheelRotation();
+//        iSlippyMapChooser.zoomIn();
+//        zoomManyTimes(e.getX(), e.getY(), rotation);
+//    }
+//
+//    public void zoomManyTimes(double x, double y, int times) {
+//        double oldScale = getScale();
+//        double newScale = scaleZoomManyTimes(times);
+//        zoomToFactor(x, y, newScale / oldScale);
+//    }
+//
+//    public double scaleZoomManyTimes(int times) {
+//        if (nativeScaleLayer != null) {
+//            ScaleList scaleList = nativeScaleLayer.getNativeScales();
+//            if (scaleList != null) {
+//                if (Boolean.TRUE.equals(PROP_ZOOM_INTERMEDIATE_STEPS.get())) {
+//                    scaleList = scaleList.withIntermediateSteps(PROP_ZOOM_RATIO.get());
+//                }
+//                Scale s = scaleList.scaleZoomTimes(getScale(), PROP_ZOOM_RATIO.get(), times);
+//                return s != null ? s.getScale() : 0;
+//            }
+//        }
+//        return getScale() * Math.pow(PROP_ZOOM_RATIO.get(), times);
+//    }
+//
+//    public double getScale() {
+//        return iSlippyMapChooser.state.getScale();
+//    }
 
     private class MoveYAction extends AbstractAction {
 

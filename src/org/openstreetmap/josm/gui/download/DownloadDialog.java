@@ -84,7 +84,6 @@ public class DownloadDialog extends JDialog {
 
     /**
      * Replies the unique instance of the download dialog
-     *
      * @return the unique instance of the download dialog
      */
     public static synchronized DownloadDialog getInstance() {

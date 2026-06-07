@@ -243,7 +243,7 @@ public class TMSCachedTileLoaderJob extends JCSCachedTileLoaderJob<String, Buffe
             // tile has already set error message, don't overwrite it
             return;
         }
-        if (attributes != null) {
+        if (attributes != null) {//
             int httpStatusCode = attributes.getResponseCode();
             if (attributes.getErrorMessage() == null) {
                 tile.setError(tr("HTTP error {0} when loading tiles", httpStatusCode));

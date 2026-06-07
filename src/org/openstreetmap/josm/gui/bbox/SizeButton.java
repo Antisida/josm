@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.awt.event.MouseWheelEvent;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
@@ -35,6 +36,12 @@ public class SizeButton extends JComponent implements Accessible {
                 toggle();
             }
         }
+//
+//        @Override
+//        public void mouseWheelMoved(MouseWheelEvent e) {
+//            int rotation = Boolean.TRUE.equals(PROP_ZOOM_REVERSE_WHEEL.get()) ? -e.getWheelRotation() : e.getWheelRotation();
+//            nc.zoomManyTimes(e.getX(), e.getY(), rotation);
+//        }
     };
 
     /**

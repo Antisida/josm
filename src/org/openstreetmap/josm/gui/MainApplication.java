@@ -1109,7 +1109,7 @@ public class MainApplication {
     }
 
     static void setupCallbacks() {
-        HttpClient.setFactory(Http1Client::new);
+        HttpClient.setFactory((url, requestMethod) -> new Http1Client(url, requestMethod));
         OsmConnection.setOAuthAccessTokenFetcher(OAuthAuthorizationWizard::obtainAccessToken);
         AbstractCredentialsAgent.setCredentialsProvider(CredentialDialog::promptCredentials);
         MessageNotifier.setNotifierCallback(MainApplication::notifyNewMessages);
